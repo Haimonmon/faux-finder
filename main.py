@@ -1,7 +1,8 @@
 import Scrappy as scrap
 
 def main() -> None:
-    pass
-
+        scraped_data = scrap.scrape("philstar")
+        
+        
 if __name__ == "__main__":
-      pass
+      main()
