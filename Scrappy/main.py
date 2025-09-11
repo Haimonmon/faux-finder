@@ -48,7 +48,7 @@ def scrape(website: Literal["philstar", "abscbn", "gmanetwork"] = "philstar", li
 
 
 def check_up(display_port: bool = False) -> Dict[str, Any]:
-    """ Checks up scrappy if its detectable or not """
+    """ Checks up scrappy if its prone on web bot detection or not. """
     activate(display_port)
 
     scraped_data: Dict[str, Any] = requests.get(f"http://localhost:3000/scrappy/check-up")
