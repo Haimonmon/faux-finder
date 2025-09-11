@@ -1,6 +1,11 @@
+import puppeteer from "puppeteer-extra";
+import StealthPlugin from "puppeteer-extra-plugin-stealth";
+
+puppeteer.use(StealthPlugin());
+
 class PhilStar {
     constructor() {
-        this.target_link = "https://www.philstar.com/";
+        this.targetLink = "https://www.philstar.com/";
     }
 
 
@@ -31,13 +36,13 @@ class PhilStarController {
         // * Default of 2 news data to be scraped
         const limit = req.query.limit ? parseInt(req.query.limit) : 2;
 
-        let scraped_data = this.target.scrape(limit)
+        let scrapedData = this.target.scrape(limit)
 
         res.json({
             "success": true,
-            "source": this.target.target_link,
+            "source": this.target.targetLink,
             "message": "Succesfully Scraped Data on PhilStar 🍺🤓☝️✨",
-            "data": scraped_data
+            "data": scrapedData
         })
     }
 }
