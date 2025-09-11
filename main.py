@@ -1,7 +1,10 @@
 import Scrappy as scrap
 
 def main() -> None:
-        scraped_data = scrap.scrape("philstar")
+        print(scrap.check_up(display_port = True))
+
+
+
         
         
 if __name__ == "__main__":
