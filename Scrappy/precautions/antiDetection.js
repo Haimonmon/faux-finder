@@ -1,11 +1,3 @@
-// Just for a quick test
-const checkBot = async (browser) => {
-    const page = await browser.newPage()
-    await page.goto('https://bot.sannysoft.com/')
-
-    await page.screenshot({path: 'test_bot.jpg'})
-}
-
 
 /**
  * Per Scrape it picks Random User Agent per Scrape
