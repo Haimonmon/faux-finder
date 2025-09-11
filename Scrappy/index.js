@@ -7,6 +7,4 @@ const port = 3000;
 
 scrappy.use("/scrappy", scrapers)
 
-scrappy.listen(port, () => {
-  console.log(` [ Scrappy 🎉 ] \n -------------------------------------------------- \n running at port: http://localhost:${port}/scrappy/ \n --------------------------------------------------`)
-});
+scrappy.listen(port);
