@@ -211,3 +211,4 @@ test
 node_modules
 .vscode
 __pycache__
+desktop.ini
