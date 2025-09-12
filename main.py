@@ -1,3 +1,5 @@
-import Scrappy as scrap
+import Scrappy as yoink
 
-print(scrap.check_up(display_port = True))
+# print(yoink.check_up())
+
+scraped_data = yoink.scrape('gmanetwork', limit = 7)
