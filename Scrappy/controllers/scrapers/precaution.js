@@ -4,6 +4,8 @@ import { fileURLToPath } from "url";
 import puppeteer from "puppeteer-extra";
 import StealthPlugin from "puppeteer-extra-plugin-stealth";
 
+import { randomUserAgent, randomDelay } from "../../precautions/antiDetection.js";
+
 puppeteer.use(StealthPlugin());
 
 const __filename = fileURLToPath(import.meta.url);
@@ -28,11 +30,13 @@ class SannySoft {
 
         const page = await browser.newPage();
 
+        await page.setUserAgent(randomUserAgent());
+
         await page.goto("https://bot.sannysoft.com/", {
             waitUntil: "networkidle2"
         });
 
-        const screenshotPath = path.join(__dirname, `../../dailycheckup/TEST-SCRAPPY-CHECKUP-${this.getCurrentDate()}.jpg`);
+        const screenshotPath = path.join(__dirname, `../../precautions/dailycheckup/TEST-SCRAPPY-CHECKUP-${this.getCurrentDate()}.jpg`);
         await page.screenshot({ path: screenshotPath});
 
         await browser.close();
