@@ -12,6 +12,7 @@
   "description": "Scrapes news on a specific philippines news sites 🤓☝️.",
   "dependencies": {
     "express": "^5.1.0",
+    "franc": "^6.2.0",
     "puppeteer": "^24.20.0",
     "puppeteer-extra": "^3.3.6",
     "puppeteer-extra-plugin-stealth": "^2.11.2"
