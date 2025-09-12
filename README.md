@@ -27,6 +27,9 @@ Meet The Nigz 🔥
 ### <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Nerd%20Face.png" alt="Nerd Face" width="25" height="25" align=center /> Haimonmon
 ##
 
+## Dataset
+https://www.kaggle.com/datasets/saurabhshahane/fake-news-classification?resource=download
+
 <hr>
 
 > [!CAUTION]
