@@ -1,5 +1,6 @@
 import os
 import json
+import csv
 
 from pathlib import Path
 from typing import List, Any, Dict
@@ -19,28 +20,61 @@ class FileManager:
             return json.load(file)
 
 
-    def load_txt_file(self, file_name: str) -> List[str]:
-        """ Loads data on the specified txt file name. """
-        with open(fr"{self.__engine_directory}{file_name}", "r", encoding="utf-8") as f:
-            return [line.strip() for line in f if line.strip()]
-
-
     def save_file(self, file_name: str, data: Any) -> Any:
         """ Saves data on the specified json file name. """
         with open(file_name, 'w') as file:
             json.dump(data, file, indent=4)
 
 
-    def create_file(self, directory: str, file_name: str) -> bool:
-        """ Creates a specified file with its file name and designated directrory """
-        os.makedirs(directory, exist_ok=True)
-        file_path = os.path.join(directory, file_name)
+    def load_csv(self, file_name: str) -> List:
+        """ Loads data on the specified csv file name. """
+        if not os.path.exists(file_name):
+            print("File not found")
+            return
+        
+        with open(file_name, 'r', newline='', encoding='utf-8') as file:
+            reader = csv.DictReader(file)
+            return list(reader)
 
-        if os.path.exists(file_path):
+
+    def save_csv(self, file_name: str, data: List[Dict[str, Any]]) -> None:
+        """ Saves data on the specified csv file name.  """
+        if not data:
+            print("Empty Data")
+            return
+
+        # * CHECKS IF A FILE IS EXISTED ALREADY.
+        self.create_file(file_name)
+
+        os.makedirs(os.path.dirname(file_name), exist_ok=True)
+
+        existing_rows: List = self.load_csv(file_name) or []
+
+        existing_set = {tuple(row.items()) for row in existing_rows}
+
+        new_rows = [row for row in data if tuple(row.items()) not in existing_set]
+
+        if not new_rows:
+            print("[ File 🍏 ] Data already saved. ")
+            return
+        
+
+        with open(file_name, 'w', newline='', encoding="utf-8") as file:
+            writer = csv.DictWriter(file, fieldnames = data[0].keys())
+            writer.writeheader()
+            writer.writerows(data)
+
+
+    def create_file(self, file_name: str) -> bool:
+        """ Creates a specified file with its file name and designated directrory """
+        os.makedirs(os.path.dirname(file_name), exist_ok=True)
+
+        if os.path.exists(file_name):
             return False
 
-        with open(file_path, "w") as f:
+        with open(file_name, "w", encoding="utf-8") as f:
             pass
+
         return True
 
 
@@ -54,4 +88,4 @@ class FileManager:
     
 
 if __name__ == "__main__":
-    file = BitFileManager(size_limit=1_000)
+    file = FileManager(size_limit=1_000)
