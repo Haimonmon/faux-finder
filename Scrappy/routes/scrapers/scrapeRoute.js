@@ -1,44 +1,28 @@
 import {Router} from 'express';
 
-import ABSCBN from '../../controllers/scrapers/abscbn.js';
-import PhilStar from '../../controllers/scrapers/philstar.js';
-import GMANetwork from '../../controllers/scrapers/gmanetwork.js';
-import FacebookController from '../../controllers/scrapers/facebook.js'
+import BBCController from '../../controllers/scrapers/bbc.js';
+import GMANetworkController from '../../controllers/scrapers/gmanetwork.js';
 
 const scrapeRoute = new Router();
 
-const abscbn = new ABSCBN();
-const philstar = new PhilStar();
-const gmanetwork = new GMANetwork();
-const facebook = new FacebookController();
+const bbc = new BBCController();
+const gmanetwork = new GMANetworkController();
 
 
 /**
- *  * Scrapers News on ABSCBN website: https://www.abs-cbn.com/
- *  ? Server Names: https://whois.domaintools.com/abs-cbn.com
+ * * For global english articles
+ * * Scrapers News on BBC website: https://www.bbc.com/news
+ * ? Server Names: https://www.whois.com/whois/bbc.com
  */
-scrapeRoute.get("/abscbn", abscbn.news.bind(abscbn));
+scrapeRoute.get("/bbc", bbc.news.bind(bbc));
 
 
-/**
- * * Scrapers News on Philstar website: https://www.philstar.com/
- * ! Danger Level: Ban Guarantee
- */
-scrapeRoute.get("/philstar", philstar.news.bind(philstar));
-
-
-/**
+/** 
+ * * For local news but scrapes english articles
  * * Scrapers News on GMA Network website: https://www.gmanetwork.com
  * ? Server Names: https://whois.domaintools.com/gmanetwork.com
  */
 scrapeRoute.get("/gmanetwork", gmanetwork.news.bind(gmanetwork));
-
-
-/**
- * * Scrapes News on Facebook on a specific group or either a post
- * ! Danger Level: Ban Guarantee
- */
-scrapeRoute.get("/facebook", facebook.news.bind(facebook));
 
 
 export default scrapeRoute;
