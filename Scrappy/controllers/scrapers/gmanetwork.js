@@ -34,7 +34,7 @@ class GMANetwork {
 
         // console.log(justInLinks)
 
-        const data = await this.helper.lootArticle(browser, justInLinks)
+        const data = await this.helper.lootlatestsectionArticle(browser, justInLinks)
 
         return data
     }
@@ -78,7 +78,7 @@ class GMANetworkHelper {
      * @param {*} browser - Puppeteer browser instance
      * @param {*} data - contains news article links and news title
      */
-    async lootArticle(browser, data) {
+    async lootlatestsectionArticle(browser, data) {
         const results = []
 
         const tasks = data.map((article) => (async () => {
