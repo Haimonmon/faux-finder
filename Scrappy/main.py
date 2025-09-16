@@ -1,75 +1,118 @@
+import os
+import time
 import requests
 import subprocess
 
-from typing import Literal, Dict, Any, List
-
 from .file import FileManager
 
-file_manager = FileManager()
-process: subprocess.Popen = None
+from dotenv import load_dotenv
+from typing import Literal, Dict, Any, List
+
+
+load_dotenv(dotenv_path = ".env")
+
 is_activated: bool = False
 
-def activate(display_port: bool = False) -> None:
+process: subprocess.Popen = None
+
+file_manager: FileManager = FileManager()
+
+port: str = os.getenv("SCRAPPY_PORT")
+host: str = os.getenv("SCRAPPY_HOST")
+
+
+def clear_screen() -> None:
+    """ jUst clears terminal screen, """
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+
+def activate(display_port: bool = False, timeout: int = 10) -> None:
     """ Activates Scrappy port in order to scrape on browser. """
+
     global process, is_activated
 
     if not is_activated:
         process = subprocess.Popen(["node", "Scrappy/index.js"])
 
+        for _attempt_ in range(timeout):
+            # clear_screen()
+            print(f"\n[ Scrappy 🟠 ] Connecting . . . 🍊")
+
+            try:
+                greet_response: Dict[str, Any] = requests.get(f"http://{host}:{port}/scrappy/")
+
+                if greet_response.status_code == 200:
+                            clear_screen()
+                            is_activated = True
+
+                            break
+                
+            except requests.exceptions.ConnectionError:
+                 pass
+            
+            time.sleep(1)
+
         if display_port:
-            print("f\n[ Scrappy 🟢 ] Getting Started . . . 🍏 \n -------------------------------------------------- \n running at port: http://localhost:3000/scrappy/ \n --------------------------------------------------\n")
+            print(f"\n[ Scrappy 🟢 ] Online . . . 🍏 \n -------------------------------------------------- \n running at port: http://{host}:{port}/scrappy/ \n --------------------------------------------------\n")
         else:
-            print("\n[ Scrappy 🟢 ] Getting Started . . . 🍏\n")
+            print("\n[ Scrappy 🟢 ] Online . . . 🍏\n")
         
-        is_activated = True
-
-
 
 def deactivate() -> None:
     """ DeActivates or Closing Scrappy port connection. """
+
     global is_activated
 
+    time.sleep(1)
+
     if is_activated:
-        print("\n[ Scrappy 🔴 ] Shutting Down . . . 🍎")
+        print("\n[ Scrappy 🔴 ] Offline . . . 🍎")
         process.terminate()
         is_activated = False
 
 
-def scrape(website: Literal["philstar", "abscbn", "gmanetwork"] = "philstar", limit: int = 1, url_to_save: str = None, display_port: bool = False) -> str:
+def scrape(website: Literal["bbc", "gmanetwork"] = "bbc", limit: int = 1, url_to_save: str = None, display_port: bool = False) -> Dict[str, Any]:
     """ Scrape a specific news on the givin url site """
-    if website not in ["philstar", "abscbn", "gmanetwork"]:
-        print(" Cant scrape that site buddy ☝️🤓.")
+
+    if not is_activated:
+        print("[ Scrappy is down ⚠️ ]")
         return
     
-    # # * ACTIVATE SCRAPPY
-    # activate(display_port)
+    if website not in ["bbc", "gmanetwork"]:
+        print(" Cant scrape that site buddy ☝️🤓.")
+        return
+
     website = website.lower()
 
-    scraped_data: Dict[str, Any] = requests.get(f"http://localhost:3000/scrappy/scrape/{website}?limit={limit}")
+    scraped_data: Dict[str, Any] = requests.get(f"http://{host}:{port}/scrappy/scrape/{website}?limit={limit}")
     data: List[Dict[str, str]] = scraped_data.json()
 
     if not data["success"]:
         return data["message"]
-
-    # deactivate()
 
     if url_to_save:
         file_manager.save_csv(url_to_save, data["data"])
+
     return data
 
 
-def check_up(display_port: bool = False) -> Dict[str, Any]:
+def check_up() -> Dict[str, str]:
     """ Checks up scrappy if its prone on web bot detection or not. """
-    # activate(display_port)
 
-    scraped_data: Dict[str, Any] = requests.get(f"http://localhost:3000/scrappy/check-up")
+    global port
+
+    if not is_activated:
+        print("[ Scrappy is down ⚠️ ]")
+        return
+
+    scraped_data: Dict[str, Any] = requests.get(f"http://{host}:{port}/scrappy/check-up")
     data: List[Dict[str, str]] = scraped_data.json()
 
     if not data["success"]:
         return data["message"]
 
-    # deactivate()
     return data["message"]
+
 
 if __name__ == "__main__":
       scraper = scrape("gmanetwork")
