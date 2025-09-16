@@ -123,13 +123,10 @@ if __name__ == "__main__":
     print("Accuracy:", round(score / len(test_set), 4))
 
     # Test article
-    title = "GTA 6 Release Date Delayed Again? Leaks Reveal Maps, Enterable Buildings, and Price Details"
-    text = """Rockstar Games has confirmed that Grand Theft Auto VI will launch worldwide on 26 May 2026, cementing its place as one of the most anticipated game releases ever.
-        The announcement lands just as new leaks hint at massive upgrades: an expanded map, a record number of enterable buildings, and whispers of a steeper price tag than past titles.
-        With the countdown now on, fans are buzzing with speculation over how far Rockstar will push the series — and how much players will have to pay to step into GTA VI's world.
-        On 2 May 2025, Rockstar confirmed the worldwide launch date for GTA 6. The game will initially be available on PlayStation 5 and Xbox Series X|S, with a PC version expected to follow within a year.
-        The news was paired with the release of a second trailer, which gained more than 475 million views in 24 hours, showcasing the main characters Jason and Lucia and offering glimpses of Vice City's modernised setting.
-        Take-Two Interactive, Rockstar's parent company, has stood by the May 2026 release date despite some industry insiders suggesting that development challenges could push it later in the year.
-        'To be honest, I don't think that it is gonna release in May. For some reason I just cannot see GTA 6 releasing in May. You know, all the rumblings and so on just doesn't seem to suggest it. For me personally, I think we are looking at October,' said veteran insider Tom Henderson of Insider Gaming in a recent podcast.
-        At present, there has been no official sign of a delay."""
+    title = "PCC agrees to extend Grab PH driver incentive program’s regulatory review"
+    text = """Grab Philippines and the Philippine Competition Commission (PCC) on Tuesday signed a new accord extending the regulatory review of the company's driver incentive program following its acquisition of Uber’s Southeast Asia business in 2018."""
     print("Prediction:", nb.predict_cap_or_no_cap(title, text, debug=True))
+
+    """
+    * dataset reference: https://www.kaggle.com/datasets/saurabhshahane/fake-news-classification?resource=download
+    """
