@@ -5,36 +5,38 @@ import StealthPlugin from "puppeteer-extra-plugin-stealth";
 
 
 import { randomUserAgent, randomDelay } from "../../precautions/antiDetection.js";
+import { type } from "os";
 
 puppeteer.use(StealthPlugin());
 
 class GMANetwork {
     constructor() {
-        this.targetLink = "https://www.gmanetwork.com/news/topstories/";
+        this.targetLink = "https://www.gmanetwork.com/news/";
         this.helper = new GMANetworkHelper();
     }
 
 
     /**
      * Yoinks given targeted website contents.
-     * @param {*} limit
+     * @param {Number} limit
+     * @param {String} type
      * @returns {void}
      */
-    async scrape(limit) {
+    async scrapeLatestSection(limit, type) {
         const browser = await puppeteer.launch({ headless: true});
         const page = await browser.newPage();
 
         await page.setUserAgent(randomUserAgent());
 
-        await page.goto(this.targetLink, {
+        await page.goto(`${this.targetLink}${type}/`, {
             waitUntil: "domcontentloaded"
         });
 
-        const justInLinks = await this.helper.lootLatestSection(page, limit)
+        const justInLinks = await this.helper.lootLatestSection(page, limit, type)
 
         // console.log(justInLinks)
 
-        const data = await this.helper.lootlatestsectionArticle(browser, justInLinks)
+        const data = await this.helper.lootLatestSectionArticle(browser, justInLinks)
 
         return data
     }
@@ -42,20 +44,19 @@ class GMANetwork {
 
 
 class GMANetworkHelper {
-    constructor() {
-
-    }
 
     /**
      * just gets article links first
      * @param {*} page - browser page.
-     * @param {*} limit - limit how many items you want to get on that browser page open.
+     * @param {Number} limit - limit how many items you want to get on that browser page open.
      * @returns {object} - returns an object that have article link, title, published date or time
      */
-    async lootLatestSection(page, limit) {
-        await page.waitForSelector("#latest_section_stories_content_news a");
+    async lootLatestSection(page, limit, type) {
+        if (type == "topstories") { type = "news"}
 
-        const dataLinks = await page.$$eval("#latest_section_stories_content_news a", (anchors, limit) => {
+        await page.waitForSelector(`#latest_section_stories_content_${type} a`);
+
+        const dataLinks = await page.$$eval(`#latest_section_stories_content_${type} a`, (anchors, limit) => {
             let results = [];
             for (let i = 0; i < anchors.length && i < limit; i++) {
                 const newsArticleLink = anchors[i].href;
@@ -73,12 +74,13 @@ class GMANetworkHelper {
         return dataLinks;
     }
 
+
     /** 
      * Scrape multiple articles.
      * @param {*} browser - Puppeteer browser instance
-     * @param {*} data - contains news article links and news title
+     * @param {Array} data - contains news article links and news title
      */
-    async lootlatestsectionArticle(browser, data) {
+    async lootLatestSectionArticle(browser, data) {
         const results = []
 
         const tasks = data.map((article) => (async () => {
@@ -126,7 +128,6 @@ class GMANetworkHelper {
                 results.push({
                     url: article.newsArticleLink,
                     headline: article.newsTitle,
-                    subheadline: articleData.subhead,
                     author: articleData.author,
                     published: articleData.publishedDate,
                     contentt: articleData.content
@@ -157,18 +158,29 @@ class GMANetworkController {
     async news(req, res) {
         // * Default of 2 news data to be scraped
         const limit = req.query.limit ? parseInt(req.query.limit) : 2;
+        const type = req.query.type ? req.query.type : "topstories"
 
-        let scrapedData = await this.target.scrape(limit)
+        let scrapedData = null;
 
+        scrapedData = await this.target.scrapeLatestSection(limit, type)
+        
         if (scrapedData) {
              res.json({
                 "success": true,
                 "source": this.target.targetLink,
-                "message": "Succesfully Scraped Data on GMA Network 🍺🤓☝️✨",
+                "message": `Succesfully scraped ${type} data on GMA Network 🍺🤓☝️✨`,
                 "data": scrapedData
             })
         }
     }
 }
+
+/**
+ * * Sections Needed To Scrape:
+ * 1,) Top Stories ✅
+ * 2.) Just In
+ * 3.) Top Picks
+ * 4.) Archives
+ */
 
 export default GMANetworkController
