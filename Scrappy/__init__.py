@@ -5,8 +5,8 @@ CAUTION:
 An action of scraping may cause a ban to the specific website so be careful.
 """
 
-from .main import scrape, check_up, activate, deactivate
+from .main import scrape_gmanetwork, scrape_bbc, check_up, activate, deactivate
 
 __all__ = [
-    "scrape", "check_up"
+    "scrape_gmanetwork", "check_up", "activate", "deactivate"
 ]
