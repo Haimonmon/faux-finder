@@ -53,9 +53,9 @@ def activate(display_port: bool = False, timeout: int = 10) -> None:
             time.sleep(1)
 
         if display_port:
-            print(f"\n[ Scrappy 🟢 ] Online . . . 🍏 \n -------------------------------------------------- \n running at port: http://{host}:{port}/scrappy/ \n --------------------------------------------------\n")
+            print(f"\n[ Scrappy 🟢 ] Going Online . . . 🍏 \n -------------------------------------------------- \n running at port: http://{host}:{port}/scrappy/ \n --------------------------------------------------\n")
         else:
-            print("\n[ Scrappy 🟢 ] Online . . . 🍏\n")
+            print("\n[ Scrappy 🟢 ] Going Online . . . 🍏\n")
         
 
 def deactivate() -> None:
@@ -66,25 +66,45 @@ def deactivate() -> None:
     time.sleep(1)
 
     if is_activated:
-        print("\n[ Scrappy 🔴 ] Offline . . . 🍎")
+        print("\n[ Scrappy 🔴 ] Going Offline . . . 🍎")
         process.terminate()
         is_activated = False
 
 
-def scrape(website: Literal["bbc", "gmanetwork"] = "bbc", limit: int = 1, url_to_save: str = None, display_port: bool = False) -> Dict[str, Any]:
-    """ Scrape a specific news on the givin url site """
+def scrape_gmanetwork(limit: int = 2, type: Literal["topstories", "money", "sports", "pinoyabroad", "scitech", "lifestyle"] = "topstories", url_to_save: str = None) -> Dict[str, Any]:
+    """ Scrape a specific news on GMA Network and can pick base on section types """
 
     if not is_activated:
         print("[ Scrappy is down ⚠️ ]")
         return
     
-    if website not in ["bbc", "gmanetwork"]:
-        print(" Cant scrape that site buddy ☝️🤓.")
+    scraped_data: Dict[str, Any] = requests.get(
+        f"http://{host}:{port}/scrappy/scrape/gmanetwork", 
+        params = {"limit": limit, "type": type}
+    )
+
+    data: List[Dict[str, str]] = scraped_data.json()
+
+    if not data["success"]:
+        return data["message"]
+
+    if url_to_save:
+        file_manager.save_csv(url_to_save, data["data"])
+
+    return data
+
+
+def scrape_bbc(limit: int = 2, type: Literal["news", "sport", "business", "innovation", "culture", "arts", "earth"] = "news", url_to_save: str = None) -> Dict[str, Any]:
+    """ Scrape a specific news on GMA Network and can pick base on section types """
+
+    if not is_activated:
+        print("[ Scrappy is down ⚠️ ]")
         return
 
-    website = website.lower()
-
-    scraped_data: Dict[str, Any] = requests.get(f"http://{host}:{port}/scrappy/scrape/{website}?limit={limit}")
+    scraped_data: Dict[str, Any] = requests.get(
+        f"http://{host}:{port}/scrappy/scrape/bbc",
+        params={"limit": limit, "type": type}
+    )
     data: List[Dict[str, str]] = scraped_data.json()
 
     if not data["success"]:
@@ -115,6 +135,6 @@ def check_up() -> Dict[str, str]:
 
 
 if __name__ == "__main__":
-      scraper = scrape("gmanetwork")
+      scraper = scrape_gmanetwork()
 
       print(scraper)
