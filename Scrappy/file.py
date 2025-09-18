@@ -37,7 +37,7 @@ class FileManager:
             return list(reader)
 
 
-    def save_csv(self, file_name: str, data: List[Dict[str, Any]]) -> None:
+    def save_csv(self, file_name: str, data: List[Dict[str, Any]], additional_fields: List[str] = []) -> None:
         """ Saves data on the specified csv file name.  """
         if not data:
             print("Empty Data")
@@ -50,19 +50,22 @@ class FileManager:
 
         existing_rows: List = self.load_csv(file_name) or []
 
-        existing_set = {tuple(row.items()) for row in existing_rows}
+        existing_set = {tuple(sorted(row.items())) for row in existing_rows}
 
-        new_rows = [row for row in data if tuple(row.items()) not in existing_set]
-
+        new_rows = [row for row in data if tuple(sorted(row.items())) not in existing_set]
+        
         if not new_rows:
             print("[ File 🍏 ] Data already saved. ")
             return
         
 
-        with open(file_name, 'w', newline='', encoding="utf-8") as file:
+        with open(file_name, 'a', newline='', encoding="utf-8") as file:
             writer = csv.DictWriter(file, fieldnames = data[0].keys())
-            writer.writeheader()
-            writer.writerows(data)
+
+            if not existing_rows:
+                writer.writeheader()
+
+            writer.writerows(new_rows)
 
 
     def create_file(self, file_name: str) -> bool:
