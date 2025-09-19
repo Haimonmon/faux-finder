@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 from typing import Literal, Dict, Any, List
 
 
-load_dotenv(dotenv_path = ".env")
+load_dotenv(dotenv_path="Scrappy/.env")
 
 is_activated: bool = False
 
