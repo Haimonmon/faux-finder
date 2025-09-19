@@ -215,3 +215,5 @@ desktop.ini
 .venv
 .env
 WELFake_Dataset.csv
+
+enclean_fake_news.csv
