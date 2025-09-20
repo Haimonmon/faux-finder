@@ -1,3 +1,6 @@
+import { saveCSVToFile } from "./fileHandling";
+
+
 // * Default Selection
 let currentSelectedPublisher = "GMA";
 let currentSelectedSections = []
@@ -51,6 +54,7 @@ const scrapeData = async () => {
 
             const data = await response.json();
             console.log(`Scraped data for ${currentSelectedPublisher} - ${section}:`, data);
+            saveCSVToFile(data,"/data/news2.csv")
 
             // TODO: Render the data dynamically on your page
         } catch (err) {

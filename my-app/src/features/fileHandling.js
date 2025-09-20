@@ -1,3 +1,4 @@
+import fs from "fs";
 import Papa from "papaparse";
 
 export const loadCSVToJSON = async (path) => {
@@ -16,11 +17,11 @@ export const loadCSVToJSON = async (path) => {
 
 
 /**
- * Converts JSON data to CSV and triggers a download in browser
+ * Saves JSON data to a CSV file on disk
  * @param {Array} jsonData - Array of objects
- * @param {string} filename - Name of the CSV file to save
+ * @param {string} filePath - Path to the CSV file
  */
-export const saveCSV = (jsonData, filename = "data.csv") => {
+export const saveCSVToFile = (jsonData, filePath = "./data.csv") => {
   if (!jsonData || !jsonData.length) {
     console.error("No data to save!");
     return;
@@ -28,5 +29,11 @@ export const saveCSV = (jsonData, filename = "data.csv") => {
 
   const csv = Papa.unparse(jsonData);
 
-  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  fs.writeFile(filePath, csv, "utf8", (err) => {
+    if (err) {
+      console.error("Error saving CSV:", err);
+    } else {
+      console.log(`CSV saved successfully at ${filePath}`);
+    }
+  });
 };
