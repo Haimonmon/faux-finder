@@ -4,7 +4,8 @@ import random
 import re
 import sys
 import os
-from collections import defaultdict, Counter
+from collections import Counter
+import pickle
 
 
 class NaiveBayesCapIdentifier:
@@ -36,6 +37,7 @@ class NaiveBayesCapIdentifier:
         text = re.sub(r"[^a-z0-9 ]", " ", text)
         return [t for t in text.split() if t not in self.STOPWORDS]
 
+    # --- Training ---
     def train(self, filepath, test_ratio=0.2):
         csv.field_size_limit(sys.maxsize)
         data = []
@@ -70,11 +72,9 @@ class NaiveBayesCapIdentifier:
 
             for token in tokens:
                 class_word_counter[label][token] += 1
-
             for i in range(1, len(tokens)):
                 bigram = tokens[i-1] + "_" + tokens[i]
                 bigram_counter[label][bigram] += 1
-
             for i in range(2, len(tokens)):
                 trigram = tokens[i-2] + "_" + tokens[i-1] + "_" + tokens[i]
                 trigram_counter[label][trigram] += 1
@@ -86,51 +86,38 @@ class NaiveBayesCapIdentifier:
         self.vocab_size = len(vocab_set)
         return test
 
+    # --- Prediction ---
     def predict(self, text, debug=False):
         tokens = self.normalize(text)
-        total_docs = sum(self.class_counts.values())
         log_scores = {}
-
         for label in self.class_counts:
             log_sum = 0.0
             for i, token in enumerate(tokens):
                 total_tokens = sum(self.class_word_counts[label].values())
-                p_uni = (self.class_word_counts[label].get(
-                    token, 0) + 1) / (total_tokens + self.vocab_size)
-
+                p_uni = (self.class_word_counts[label].get(token, 0) + 1) / (total_tokens + self.vocab_size)
                 if i > 0:
                     bigram = tokens[i-1] + "_" + token
-                    p_bi = (self.bigram_counts[label].get(
-                        bigram, 0) + 1) / (total_tokens + self.vocab_size)
+                    p_bi = (self.bigram_counts[label].get(bigram, 0) + 1) / (total_tokens + self.vocab_size)
                 else:
                     p_bi = p_uni
-
                 if i > 1:
                     trigram = tokens[i-2] + "_" + tokens[i-1] + "_" + token
-                    p_tri = (self.trigram_counts[label].get(
-                        trigram, 0) + 1) / (total_tokens + self.vocab_size)
+                    p_tri = (self.trigram_counts[label].get(trigram, 0) + 1) / (total_tokens + self.vocab_size)
                 else:
                     p_tri = p_bi
-
                 p = self.alpha1*p_uni + self.alpha2*p_bi + self.alpha3*p_tri
                 log_sum += math.log(p)
-
-            # Average log per token to avoid underflow
             log_scores[label] = log_sum / max(len(tokens), 1)
 
-        # Convert to percentages
         max_log = max(log_scores.values())
-        exp_scores = {lbl: math.exp(v - max_log)
-                      for lbl, v in log_scores.items()}
+        exp_scores = {lbl: math.exp(v - max_log) for lbl, v in log_scores.items()}
         total = sum(exp_scores.values())
         probs = {lbl: exp_scores[lbl]/total for lbl in exp_scores}
-
         best_label = max(probs, key=probs.get)
 
         if debug:
             print(f"\n--- ARTICLE DEBUG ---")
-            print(
-                f"FAKE: {probs.get(0, 0)*100:.2f}% | REAL: {probs.get(1, 0)*100:.2f}%")
+            print(f"FAKE: {probs.get(0,0)*100:.2f}% | REAL: {probs.get(1,0)*100:.2f}%")
             print("Word occurrences per class:")
             for token in tokens:
                 c0 = self.class_word_counts.get(0, {}).get(token, 0)
@@ -140,30 +127,40 @@ class NaiveBayesCapIdentifier:
 
         return best_label, probs
 
+    # --- Save/load the entire class instance ---
+    def save_model(self, path):
+        with open(path, "wb") as f:
+            pickle.dump(self, f)
+        print(f"Entire model instance saved to {path}")
+
+    @staticmethod
+    def load_model(path):
+        with open(path, "rb") as f:
+            model = pickle.load(f)
+        print(f"Model instance loaded from {path}")
+        return model
+
+    # --- Classify and append ---
     def classify_and_append(self, source_csv, dataset_csv, debug=False):
         if not os.path.exists(dataset_csv):
             raise FileNotFoundError(f"{dataset_csv} not found.")
 
-        # Track existing headlines+urls to avoid duplicates
         existing = set()
         with open(dataset_csv, "r", encoding="utf-8") as f:
             reader = csv.DictReader(f)
             for r in reader:
-                key = ((r.get("headline") or "").strip(),
-                       (r.get("url") or "").strip())
+                key = ((r.get("headline") or "").strip(), (r.get("url") or "").strip())
                 existing.add(key)
 
         with open(source_csv, "r", encoding="utf-8") as fin, \
-                open(dataset_csv, "a", newline="", encoding="utf-8") as fout:
+             open(dataset_csv, "a", newline="", encoding="utf-8") as fout:
 
             reader = csv.DictReader(fin)
-            fieldnames = ["headline", "content", "label",
-                          "author", "url", "fake_pct", "real_pct"]
+            fieldnames = ["headline", "content", "label", "author", "url", "fake_pct", "real_pct"]
             writer = csv.DictWriter(fout, fieldnames=fieldnames)
 
             for row in reader:
-                key = ((row.get("headline") or "").strip(),
-                       (row.get("url") or "").strip())
+                key = ((row.get("headline") or "").strip(), (row.get("url") or "").strip())
                 if key in existing:
                     continue
 
@@ -175,29 +172,32 @@ class NaiveBayesCapIdentifier:
 
                 writer.writerow({
                     "headline": title,
-                    "content":  content,
-                    "label":    label,
-                    "author":   author,
-                    "url":      url,
-                    "fake_pct": round(probs.get(0, 0)*100, 2),
-                    "real_pct": round(probs.get(1, 0)*100, 2)
+                    "content": content,
+                    "label": label,
+                    "author": author,
+                    "url": url,
+                    "fake_pct": round(probs.get(0,0)*100,2),
+                    "real_pct": round(probs.get(1,0)*100,2)
                 })
 
                 if debug:
-                    print(
-                        f"Appended -> Label {label} | FAKE: {probs.get(0, 0)*100:.2f}% | REAL: {probs.get(1, 0)*100:.2f}% | {title[:60]}...")
+                    print(f"Appended -> Label {label} | FAKE: {probs.get(0,0)*100:.2f}% | REAL: {probs.get(1,0)*100:.2f}% | {title[:60]}...")
 
 
+# --- Main ---
 if __name__ == "__main__":
     TRAIN_FILE = "./data/final_en.csv"
     NEW_ARTICLES = "./data/news.csv"
+    MODEL_FILE = "./data/nb_full_model.pkl"
 
-    nb = NaiveBayesCapIdentifier()
-    test_set = nb.train(TRAIN_FILE, test_ratio=0.2)
-    acc = sum(nb.predict(doc)[0] == lbl for doc,
-              lbl in test_set) / len(test_set)
-    print(f"Validation Accuracy: {acc:.2%}")
+    # Load model if exists, else train and save
+    if os.path.exists(MODEL_FILE):
+        nb = NaiveBayesCapIdentifier.load_model(MODEL_FILE)
+    else:
+        nb = NaiveBayesCapIdentifier()
+        test_set = nb.train(TRAIN_FILE, test_ratio=0.2)
+        acc = sum(nb.predict(doc)[0] == lbl for doc, lbl in test_set) / len(test_set)
+        print(f"Validation Accuracy: {acc:.2%}")
+        nb.save_model(MODEL_FILE)
 
     nb.classify_and_append(NEW_ARTICLES, TRAIN_FILE, debug=True)
-
-    # * Source Data Sets file:  https://www.kaggle.com/datasets/evilspirit05/english-fake-news-dataset?select = final_en.csv
