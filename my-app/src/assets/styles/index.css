@@ -1,0 +1,415 @@
+
+h1 {
+    font-family: "Roboto Medium";
+    color: #1E1E1E;
+}
+
+
+/* TODO: Banner  */
+.scrappy {
+    margin-bottom: 17px;
+    width: 1138px;
+    height: 327px;
+    align-items: center;
+    border-bottom: #868484 solid 1px;
+    display: flex;
+    gap: 70px;
+    justify-content: center;
+}
+
+.scrappy-header {
+    width: 567px;
+    height: 273px;
+    position: relative;
+}
+
+.scrappy-header h1 {
+    font-size: 54px;
+    margin: 0 auto;
+    text-align: justify;
+    font-weight: 500;
+}
+
+
+#scrape-btn {
+    border: 0;
+    background-color: #5242DC;
+    color: white;
+    border-radius: 20px;
+    font-weight: "Roboto Medium";
+    font-weight: 500;
+    width: 177px;
+    height: 39px;
+    font-size: 25px;
+    position: absolute;
+    right: 0;
+    bottom: 25px;
+    cursor: pointer;
+}
+
+.app-logo h3 {
+    font-family: "Roboto Bold";
+    font-weight: 500;
+    font-size: 30px;
+    color: #1E1E1E;
+}
+
+.app-logo img {
+    width: 42px;
+    height: 42px;
+}
+
+
+
+.scrappy-filter {
+    width: 501px;
+    height: 273px;
+    border-left: #5242DC 2px solid;
+    display: flex;
+    align-items: flex-end;
+    flex-direction: column;
+    gap: 33px;
+}
+
+.scrappy-filter .publisher {
+    height: 105px;
+    width: 410px;
+    display: flex;
+    align-items: flex-end;
+    flex-direction: column;
+}
+
+.scrappy-filter .publisher .publisher-buttons-container {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    gap: 13px 25px;
+    height: 73px;
+    width: 370px;
+    justify-content: flex-end;
+}
+
+.scrappy-filter .section .section-buttons-container {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    gap: 13px 25px;
+    height: 73px;
+    width: 450px;
+    justify-content: flex-end;
+}
+
+.scrappy-filter .publisher button,
+.scrappy-filter .section button {
+    border: 1px solid #868484;
+    height: 30px;
+    background-color: white;
+    border-radius: 20px;
+    font-size: 15px;
+    color: #1E1E1E;
+    font-family: "Roboto Regular";
+    font-weight: 500;
+    padding-left: 13px;
+    padding-right: 13px;
+    cursor: pointer;
+}
+
+.scrappy-filter .publisher .publisher-buttons-container button {
+  position: relative;
+  overflow: hidden; 
+  z-index: 0;
+  background: white;
+  color: #1E1E1E;
+  border: 1px solid #868484;
+  transition: color 0.3s ease, border 0.3s ease;
+}
+
+/* ? Selected Animations */
+.scrappy-filter .publisher .publisher-buttons-container button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 100%;
+  background-color: #5242DC;
+  z-index: -1;
+  transition: width 0.4s ease;
+}
+
+
+.scrappy-filter .publisher .publisher-buttons-container .selected {
+  color: white;
+  border: 1px solid #5242DC;
+}
+
+.scrappy-filter .publisher .publisher-buttons-container .selected::before {
+  width: 100%;
+}
+
+
+.scrappy-filter .section .section-buttons-container button {
+  position: relative;
+  overflow: hidden; 
+  z-index: 0;
+  background: white;
+  color: #1E1E1E;
+  border: 1px solid #868484;
+  transition: color 0.3s ease, border 0.3s ease;
+}
+
+.scrappy-filter .section .section-buttons-container button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 100%;
+  background-color: #5242DC;
+  z-index: -1;
+  transition: width 0.4s ease;
+}
+
+
+.scrappy-filter .section .section-buttons-container .selected {
+  color: white;
+  border: 1px solid #5242DC;
+}
+
+.scrappy-filter .section .section-buttons-container .selected::before {
+  width: 100%;
+}
+
+/* ? Animations */
+.section-buttons-container button {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeSlideIn 0.5s ease forwards;
+}
+
+.section-buttons-container button:nth-child(1) { animation-delay: 0.1s; }
+.section-buttons-container button:nth-child(2) { animation-delay: 0.2s; }
+.section-buttons-container button:nth-child(3) { animation-delay: 0.3s; }
+.section-buttons-container button:nth-child(4) { animation-delay: 0.4s; }
+.section-buttons-container button:nth-child(5) { animation-delay: 0.5s; }
+.section-buttons-container button:nth-child(6) { animation-delay: 0.6s; }
+.section-buttons-container button:nth-child(7) { animation-delay: 0.7s; }
+
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.scrappy-filter .section {
+    width: 450px;
+    height: 105px;
+    display: flex;
+    align-items: flex-end;
+    flex-direction: column;
+}
+
+.scrappy-filter h3 {
+    margin: 0;
+    font-family: "Roboto Medium";
+    font-weight: 500;
+    color: #1E1E1E;
+    font-size: 20px;
+    margin-bottom: 15px;
+}
+
+
+/* TODO: Navigations */
+navigation {
+    width: 1138px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 38px;
+}
+
+.buttons-main-container {
+    display: flex;
+    gap: 45px;
+}
+
+.buttons-main-container .button-text {
+    color: #1E1E1E;
+    font-family: "Roboto Medium";
+    font-size: 20px;
+}
+
+#latest-container,
+#recent-container,
+#news-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    height: 43px;
+    position: relative;
+}
+
+
+#latest-container::after,
+#recent-container::after,
+#news-container::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -3px; 
+  width: 100%;
+  height: 3px;
+  background: #5242DC;
+  transform: scaleX(0);   
+  transform-origin: left; 
+  transition: transform 0.3s ease;
+}
+
+
+#latest-container:hover::after,
+#recent-container:hover::after,
+#news-container:hover::after {
+  transform: scaleX(1);   
+}
+
+
+.buttons-main-container .selected::after {
+  transform: scaleX(1);          
+  background: #5242DC;
+  transition: none;              
+}
+
+.buttons-main-container .selected {
+    border-bottom: 3px solid #5242DC;
+}
+
+.total-item-container {
+    background-color: #5242DC;
+    width: 30px;
+    text-align: center;
+    color: white;
+    font-family: "Roboto Medium";
+    font-size: 15px;
+    border-radius: 20px;
+}
+
+#searchbar {
+    width: 374px;
+    height: 43px;
+    padding-right: 39px;
+    outline: none;
+    font-family: "Roboto Medium";
+    font-size: 15px;
+    font-weight: 500;
+    border: none;
+    border-bottom: 3px solid #5242DC;
+}
+
+.search-bar-container {
+    width: 374px;
+    position: relative;
+    border: 0px;
+}
+
+.search-bar-container img {
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    right: 0px;
+    bottom: 12px;
+    cursor: pointer;
+}
+
+/* TODO: Main Contents */
+main {
+    width: 1138px;
+    display: flex;
+    height: 539px;
+    justify-content: space-between;
+    overflow-y: scroll;
+    padding-right: 20px;
+    scroll-snap-type: y mandatory;
+    scroll-behavior: smooth;
+}
+
+#column1, #column2, #column3 {
+    display: flex;
+    width: 322.72px;
+    flex-direction: column;
+    gap: 70px;
+}
+
+/* * Article Cards  */
+.article-card-container {
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.article-card-title {
+    display: flex;
+    font-family: "Roboto SemiBold";
+    font-weight: 500;
+    font-size: 20px;
+    color: #1E1E1E;
+    text-align: justify;
+}
+
+.article-card-source-container {
+    display: flex;
+    gap: 10px;
+    font-family: "Roboto Medium";
+    font-weight: 500;
+    font-size: 15px;
+    color: #868484;
+    align-items: center;
+}
+
+.just-circle {
+    background-color: #868484;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+}
+
+.article-card-reliability-container {
+    display: flex;
+    align-items: center;
+    height: auto;
+    gap: 10px;
+}
+
+.article-reliability-real-icon {
+    width: 19px;
+    height: 19px;
+}
+
+.article-reliability-fake-icon {
+    width: 15px;
+    height: 15px;
+}
+
+.article-card-reliability-container span  {
+   font-weight: 500;
+   font-family: "Roboto Medium";
+   font-size: 15px;
+   color: #1E1E1E;
+}
+
+.reliability-real-text {
+    color:#5242DC !important;
+}
+
+.reliability-fake-text {
+    color: #E86229 !important;
+}
+

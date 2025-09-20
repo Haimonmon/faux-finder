@@ -37,7 +37,7 @@ class NaiveBayesCapIdentifier:
         return [t for t in text.split() if t not in self.STOPWORDS]
 
     def train(self, filepath, test_ratio=0.2):
-        csv.field_size_limit(sys.maxsize)
+        csv.field_size_limit(2**31 - 1)
         data = []
         with open(filepath, "r", encoding="utf-8") as f:
             reader = csv.DictReader(f)
@@ -189,8 +189,8 @@ class NaiveBayesCapIdentifier:
 
 
 if __name__ == "__main__":
-    TRAIN_FILE = "./data/final_en.csv"
-    NEW_ARTICLES = "./data/news.csv"
+    TRAIN_FILE = ".my-app/data/final_en.csv"
+    NEW_ARTICLES = ".my-app/data/news.csv"
 
     nb = NaiveBayesCapIdentifier()
     test_set = nb.train(TRAIN_FILE, test_ratio=0.2)

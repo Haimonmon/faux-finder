@@ -94,7 +94,7 @@ def scrape_gmanetwork(limit: int = 2, type: Literal["topstories", "money", "spor
     return data
 
 
-def scrape_bbc(limit: int = 2, type: Literal["news", "sport", "business", "innovation", "culture", "arts", "earth"] = "news", url_to_save: str = None) -> Dict[str, Any]:
+def scrape_bbc(limit: int = 2, type: Literal["news", "sport", "business", "innovation", "culture", "earth"] = "news", url_to_save: str = None) -> Dict[str, Any]:
     """ Scrape a specific news on GMA Network and can pick base on section types """
 
     if not is_activated:

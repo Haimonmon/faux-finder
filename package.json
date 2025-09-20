@@ -1,0 +1,27 @@
+{
+  "name": "faux-finder",
+  "version": "1.0.0",
+  "description": "The Fake News identifier is a tool that determines whether a particular news post is legit or faked.",
+  "private": true,
+  "workspaces": [
+    "Scrappy",
+    "my-app"
+  ],
+  "scripts": {
+    "dev:frontend": "vite --config my-app/vite.config.js",
+    "dev:node": "node Scrappy/index.js",
+    "dev": "npm-run-all --parallel dev:*",
+    "build:frontend": "vite build --config my-app/vite.config.js",
+    "build": "npm run build:frontend"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "npm-run-all": "^4.1.5",
+    "vite": "^7.1.6"
+  },
+  "dependencies": {
+    "cors": "^2.8.5"
+  }
+}

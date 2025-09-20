@@ -157,7 +157,7 @@ class GMANetworkController {
      */
     async news(req, res) {
         // * Default of 2 news data to be scraped
-        const limit = req.query.limit ? parseInt(req.query.limit) : 2;
+        const limit = req.query.limit ? parseInt(req.query.limit) : 6;
         const type = req.query.type ? req.query.type : "topstories"
 
         let scrapedData = null;
