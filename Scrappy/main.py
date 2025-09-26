@@ -88,8 +88,8 @@ def scrape_gmanetwork(limit: int = 2, type: Literal["topstories", "money", "spor
     if not data["success"]:
         return data["message"]
 
-    if url_to_save:
-        file_manager.save_csv(url_to_save, data["data"])
+    # if url_to_save:
+    #     file_manager.save_csv(url_to_save, data["data"])
 
     return data
 

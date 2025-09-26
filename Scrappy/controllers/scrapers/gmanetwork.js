@@ -2,6 +2,7 @@ import { franc } from "franc";
 
 import puppeteer from "puppeteer-extra";
 import StealthPlugin from "puppeteer-extra-plugin-stealth";
+import { saveCSVFile } from "../../utils/file.js";
 
 
 import { randomUserAgent, randomDelay } from "../../precautions/antiDetection.js";
@@ -163,6 +164,8 @@ class GMANetworkController {
         let scrapedData = null;
 
         scrapedData = await this.target.scrapeLatestSection(limit, type)
+
+        saveCSVFile(scrapedData, "my-app/data/test.csv")
         
         if (scrapedData) {
              res.json({

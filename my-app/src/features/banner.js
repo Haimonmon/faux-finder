@@ -49,12 +49,12 @@ const scrapeData = async () => {
     for (const section of sectionsToScrape) {
         const apiSection = publisherData.apiSectionTypes[section];
         try {
-            const response = await fetch(`http://localhost:3000/scrappy/scrape/${publisherData.apiName}?type=${apiSection}`);
+            const response = await fetch(`http://localhost:3000/scrappy/scrape/${publisherData.apiName}?type=${apiSection}&limit=6`);
             if (!response.ok) throw new Error("Network response was not ok");
 
             const data = await response.json();
             console.log(`Scraped data for ${currentSelectedPublisher} - ${section}:`, data);
-            saveCSVToFile(data,"/data/news2.csv")
+            // saveCSVToFile(data["data"],"/data/news2.csv")
 
             // TODO: Render the data dynamically on your page
         } catch (err) {
